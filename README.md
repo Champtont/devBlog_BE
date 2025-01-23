@@ -13,9 +13,9 @@
 
 ## Tech stack
 
-| - atob | - cors | - mongodb |
-| - bcrypt | - express | - mongoose |        
-| - cloudinary | - jsonwebtoken | - multer |     
+| - atob       | - cors         | - mongodb  |
+| - bcrypt     | - express      | - mongoose |        
+| - cloudinary | - jsonwebtoken | - multer   |     
 
 ## functions
 | Endpoint        | API Type                | Authority |
