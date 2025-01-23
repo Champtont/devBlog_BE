@@ -1,6 +1,6 @@
 import express from "express";
 import createHttpError from "http-errors";
-import passport from "passport";
+import passport from "passport-google-oauth";
 import q2m from "query-to-mongo";
 import multer from "multer";
 import { v2 as cloudinary } from "cloudinary";
@@ -29,6 +29,7 @@ usersRouter.post("/register", async (req, res, next) => {
   }
 });
 //googleEnd points
+/*
 usersRouter.get(
   "/googleLogin",
   passport.authenticate("google", { scope: ["profile", "email"] })
@@ -42,6 +43,7 @@ usersRouter.get(
     res.redirect(`${process.env.FE_URL}/${req.user.accessToken}`);
   }
 );
+*/
 //logIn
 usersRouter.post("/login", async (req, res, next) => {
   try {

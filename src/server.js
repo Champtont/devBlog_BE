@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
-import passport from "passport";
-import googleStrategy from "./lib/auth/google.js";
+import passport from "passport-google-oauth";
+//import googleStrategy from "./lib/auth/google.js";
 import blogsRouter from "./api/blogs/index.js";
 import usersRouter from "./api/users/index.js";
 import commentsRouter from "./api/comments/index.js";
@@ -9,7 +9,7 @@ import {
   badRequestHandler,
   genericErrorHandler,
   notFoundHandler,
-} from "./errorHandlers.js";
+} from "./lib/errorHandlers.js";
 
 const server = express();
 

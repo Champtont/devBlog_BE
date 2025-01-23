@@ -1,4 +1,17 @@
 {
+  "name": "devblog_be",
+  "version": "1.0.0",
+  "description": "creating a backend for the developers blog that Eli and I will utilize in order to post about our development endeavors.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon -e js -r dotenv/config ./src/index.js",
+    "start": "node --env-file=.env ./src/index.js"
+  },
+  "keywords": [],
+  "author": "Courtney J Hampton-Thomas",
+  "license": "ISC",
   "devDependencies": {
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.7",
