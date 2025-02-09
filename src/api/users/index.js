@@ -56,7 +56,7 @@ usersRouter.post("/login", async (req, res, next) => {
       const accessToken = await createAccessToken(payload);
       res.send({ accessToken });
     } else {
-      next(createHttpError(401, "Credentials are not recognized!"));
+      res.send(createHttpError(401, "Credentials are not recognized!"));
     }
   } catch (error) {
     next(error);

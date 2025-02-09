@@ -2,6 +2,12 @@ import express from "express";
 import createHttpError from "http-errors";
 import BlogsModel from "./model.js";
 import q2m from "query-to-mongo";
+import multer from "multer";
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import { adminOnlyMiddleware } from "../../lib/auth/adminAuth.js";
+import { JWTAuthMiddleware } from "../../lib/auth/jwtAuth.js";
+import { createAccessToken } from "../../lib/tools.js";
 
 const blogsRouter = express.Router();
 
@@ -82,6 +88,39 @@ blogsRouter.put("/:blogId", async (req, res, next) => {
     next(error);
   }
 });
+
+//edit blog photo
+//Edit My profile pic
+const cloudinaryUploader = multer({
+  storage: new CloudinaryStorage({
+    cloudinary,
+    params: {
+      folder: "DevBlog",
+    },
+  }),
+}).single("avatar");
+
+blogsRouter.post(
+  "/me/:blogsId",
+  JWTAuthMiddleware,
+  cloudinaryUploader,
+  async (req, res, next) => {
+    try {
+      const blog = await BlogsModel.findByIdAndUpdate(
+        req.params.blogsId,
+        { mainPhoto: req.file.path },
+        [{photos: req.file.path }],
+        { new: true }
+      );
+      if (!blog)
+        next(createError(404, `No blog wtih the id of ${req.params.blogsId}`));
+      res.status(201).send(blog);
+    } catch (error) {
+      res.send(error);
+      next(error);
+    }
+  }
+);
 
 //delete blog
 
