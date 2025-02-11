@@ -4,6 +4,7 @@ const { Schema, model } = mongoose;
 
 const blogSchema = new Schema({
   title: { type: String, required: true },
+  subtitle: {type: String, required: false},
   mainPhoto: {
     type: String,
     required: false,

@@ -1,6 +1,7 @@
 import express from "express";
 import createHttpError from "http-errors";
 import BlogsModel from "./model.js";
+import UsersModel from "../users/model.js"
 import q2m from "query-to-mongo";
 import multer from "multer";
 import { v2 as cloudinary } from "cloudinary";
@@ -13,11 +14,21 @@ const blogsRouter = express.Router();
 
 //post blog
 
-blogsRouter.post("/", async (req, res, next) => {
+blogsRouter.post("/", JWTAuthMiddleware, async (req, res, next) => {
   try {
-    const newBlog = new BlogsModel(req.body);
-    const { _id } = await newBlog.save();
-    res.status(201).send({ _id });
+      const newBlog = new BlogsModel({...req.body, author: req.user._id});
+      
+      const blogToInsert = newBlog;
+      const updatedUser = await UsersModel.findByIdAndUpdate(
+        req.user._id,
+        { $push: {myBlogs: blogToInsert}},
+        {new: true, runValidators: true}
+      )
+      if (newBlog && updatedUser){
+        const { _id } = await newBlog.save();
+        res.send(updatedUser)
+      }
+    
   } catch (error) {
     next(error);
   }
@@ -90,7 +101,6 @@ blogsRouter.put("/:blogId", async (req, res, next) => {
 });
 
 //edit blog photo
-//Edit My profile pic
 const cloudinaryUploader = multer({
   storage: new CloudinaryStorage({
     cloudinary,
@@ -98,7 +108,7 @@ const cloudinaryUploader = multer({
       folder: "DevBlog",
     },
   }),
-}).single("avatar");
+}).array("photos");
 
 blogsRouter.post(
   "/me/:blogsId",
@@ -124,11 +134,11 @@ blogsRouter.post(
 
 //delete blog
 
-blogsRouter.delete("/:blogId/:commentId", async (req, res, next) => {
+blogsRouter.delete("/:blogId", JWTAuthMiddleware, async (req, res, next) => {
   try {
     const updatedUser = await UsersModel.findByIdAndUpdate(
               req.user._id,
-              { $pull: [{ myBlogs: req.params.blogId }, {comments: req.params.commentIdId}] },
+              { $pull: [{ myBlogs: req.params.blogId }] },
               { new: true, runValidators: true }
             );
     
